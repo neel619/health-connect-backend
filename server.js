@@ -17,7 +17,12 @@ const PORT = process.env.PORT || 5000;
 
 // MongoDB connection string (from .env file)
 const uri = process.env.MONGODB_URI; // Ensure this is set in your .env file
-const client = new MongoClient(uri);
+const client = new MongoClient(uri, {
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
+  tls: true, // Enable TLS for MongoDB Atlas
+});
+
 
 // Middleware
 app.use(cors({
