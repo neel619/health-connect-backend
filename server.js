@@ -26,7 +26,7 @@ const client = new MongoClient(uri, {
 // Middleware
 
 app.use(cors({
-  origin: "https://healthconnect-pnlslyy6x-neel619s-projects.vercel.app",
+  origin: "https://healthconnect-five.vercel.app/",
   methods: "GET, POST, PUT, DELETE",
   credentials: true
 }));
