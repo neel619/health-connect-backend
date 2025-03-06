@@ -386,31 +386,37 @@ app.post('/signin', async (req, res) => {
   const { email, password } = req.body;
   console.log('Request body:', req.body);
 
+  // Validate request body
+  if (!email || !password) {
+    console.log('Missing email or password');
+    return res.status(400).json({ success: false, message: 'Email and password are required' });
+  }
+
   try {
     // Find the user by email
     const user = await db.collection('users').findOne({ email });
 
-    if (user) {
-      // Compare the provided password with the hashed password in the database
-      const isPasswordValid = await bcrypt.compare(password, user.password);
-
-      if (isPasswordValid) {
-        console.log('Sign-in successful for user:', user.email);
-        res.status(200).json({ success: true, message: 'Sign-in successful!', user });
-      } else {
-        console.log('Invalid password for user:', user.email);
-        res.status(401).json({ success: false, message: 'Invalid email or password' });
-      }
-    } else {
+    if (!user) {
       console.log('User not found:', email);
-      res.status(404).json({ success: false, message: 'User not found' });
+      return res.status(401).json({ success: false, message: 'Invalid email or password' });
     }
+
+    // Compare the provided password with the hashed password in the database
+    const isPasswordValid = await bcrypt.compare(password, user.password);
+
+    if (!isPasswordValid) {
+      console.log('Invalid password for user:', user.email);
+      return res.status(401).json({ success: false, message: 'Invalid email or password' });
+    }
+
+    // Sign-in successful
+    console.log('Sign-in successful for user:', user.email);
+    res.status(200).json({ success: true, message: 'Sign-in successful!', user });
   } catch (error) {
     console.error('Error during sign-in:', error);
     res.status(500).json({ success: false, message: 'Failed to sign in' });
   }
 });
-
 // Route to handle saving daily progress
 app.post('/api/progress', async (req, res) => {
   const { userId, steps, caloriesBurned, waterIntake } = req.body;
