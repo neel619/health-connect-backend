@@ -24,16 +24,23 @@ const client = new MongoClient(uri, {
 });
 
 // Middleware
+// Allow requests only from your Vercel frontend
 app.use(cors({
-  origin: ['https://healthconnect-pnlslyy6x-neel619s-projects.vercel.app/'], // Allow requests from both origins
-  methods: ['GET', 'POST'],
-  credentials: true,
+  origin: "https://healthconnect-pnlslyy6x-neel619s-projects.vercel.app",
+  methods: "GET,POST,PUT,DELETE",
+  credentials: true
 }));
-app.use(bodyParser.json());
 
-// Serve static files from the "public" directory
-app.use(express.static('public'));
+// Or allow all origins (not recommended for production)
+app.use(cors());
 
+// Your routes here
+app.post("/signin", (req, res) => {
+  res.json({ message: "Signin successful" });
+});
+
+// Start server
+app.listen(5000, () => console.log("Server running on port 5000"));
 // Nodemailer configuration
 const transporter = nodemailer.createTransport({
   service: 'gmail',
