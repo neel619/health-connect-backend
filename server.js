@@ -8,6 +8,8 @@ const bcrypt = require('bcryptjs'); // For password hashing
 const path = require('path');
 const axios = require('axios'); // For making HTTP requests
 const { OpenAI } = require('openai'); // For ChatGPT integration
+const { ClerkExpressRequireAuth } = require('@clerk/clerk-sdk-node')
+
 
 // Load environment variables from .env file
 dotenv.config();
