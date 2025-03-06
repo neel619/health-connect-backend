@@ -10,6 +10,15 @@ const axios = require('axios'); // For making HTTP requests
 const { OpenAI } = require('openai'); // For ChatGPT integration
 const { ClerkExpressRequireAuth } = require('@clerk/clerk-sdk-node')
 
+const clerkFrontendApi = process.env.CLERK_PUBLISHABLE_KEY;
+ReactDOM.render(
+  <React.StrictMode>
+    <ClerkProvider frontendApi={clerkFrontendApi}>
+      <App />
+    </ClerkProvider>
+  </React.StrictMode>,
+  document.getElementById('root')
+);
 
 // Load environment variables from .env file
 dotenv.config();
