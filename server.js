@@ -23,10 +23,9 @@ const client = new MongoClient(uri, {
   tls: true, // Enable TLS for MongoDB Atlas
 });
 
-
 // Middleware
 app.use(cors({
-  origin: ['http://localhost:3000', 'http://localhost:3002'], // Allow requests from both origins
+  origin: ['https://healthconnect-pnlslyy6x-neel619s-projects.vercel.app/'], // Allow requests from both origins
   methods: ['GET', 'POST'],
   credentials: true,
 }));
@@ -405,6 +404,34 @@ app.post('/signin', async (req, res) => {
   } catch (error) {
     console.error('Error during sign-in:', error);
     res.status(500).json({ success: false, message: 'Failed to sign in' });
+  }
+});
+
+// Route to handle saving daily progress
+app.post('/api/progress', async (req, res) => {
+  const { userId, steps, caloriesBurned, waterIntake } = req.body;
+
+  try {
+    const progress = { userId, steps, caloriesBurned, waterIntake, date: new Date() };
+    const result = await db.collection('progress').insertOne(progress);
+    console.log('Progress saved:', result.insertedId);
+    res.status(201).json({ success: true, message: 'Progress saved successfully!' });
+  } catch (error) {
+    console.error('Error saving progress:', error);
+    res.status(500).json({ success: false, message: 'Failed to save progress' });
+  }
+});
+
+// Route to fetch user's progress data
+app.get('/api/progress', async (req, res) => {
+  const { userId } = req.query;
+
+  try {
+    const progressData = await db.collection('progress').find({ userId }).toArray();
+    res.status(200).json({ success: true, data: progressData });
+  } catch (error) {
+    console.error('Error fetching progress data:', error);
+    res.status(500).json({ success: false, message: 'Failed to fetch progress data' });
   }
 });
 
